@@ -1,0 +1,7 @@
+sudo service postgresql stop
+sudo /etc/init.d/apache2 stop
+
+# delete migration scripts
+
+sudo find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+sudo find . -path "*/migrations/*.pyc"  -delete
