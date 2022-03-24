@@ -9,8 +9,8 @@ class Bike(models.Model):
 
     departure = models.CharField(max_length=200, default='null', null=True)
     arrival = models.CharField(max_length=200, default='null', null=True)
-    departure_date = models.DateTimeField(auto_now=True, null=True)
-    arrival_date = models.DateTimeField(auto_now=True, null=True)
+    departure_date = models.CharField(max_length=200, default='null', null=True)
+    arrival_date = models.CharField(max_length=200, default='null', null=True)
     train_number = models.CharField(max_length=200, default='null', null=True)
 
 
@@ -19,3 +19,14 @@ class TrainCapacity(models.Model):
 
     train_number = models.CharField(max_length=200, default='null', null=True)
     capacity = models.IntegerField(default=0, null=True)
+
+
+class NumberOfSearch(models.Model):
+    """Model For The number of search"""
+
+    departure = models.CharField(max_length=200, default='null', null=True)
+    arrival = models.CharField(max_length=200, default='null', null=True)
+    departure_date = models.CharField(max_length=200, default='null', null=True)
+    arrival_date = models.CharField(max_length=200, default='null', null=True)
+    train_number = models.CharField(max_length=200, default='null', null=True)
+    number_of_search = models.IntegerField(default=0)
