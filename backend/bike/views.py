@@ -67,7 +67,9 @@ class BikeView(viewsets.ViewSet):
 
             # check if the max capacity limit reached
             if number_of_free_space != 0:
-                data = {'train_number': train_number, 'free_space': number_of_free_space, 'number_of_search': search+1}
+                data = {'train_number': train_number, 'free_space': number_of_free_space, 'number_of_search': search+1,
+                        'is_departure': data['is_departure'], 'selectedDate':  data['selectedDate'], 'from': data['from']
+                        , 'to': data['to']}
                 return Response(data, status=status.HTTP_201_CREATED)
             else:
                 # Todo: recommend next trains
@@ -133,9 +135,23 @@ class BookView(viewsets.ViewSet):
 
     def create(self, request):
         # filter data
-        data = request.data
+        input = request.data
+        if input['is_departure']:
+            trip = 'departure_date'
+        else:
+            trip = 'arrival_date'
+        data = {
+            "departure": input['departure'],
+            "arrival": input['arrival'],
+            trip: input['selectedDate'],
+            'train_number': input['train_number']
+        }
 
-        serializer = BikeSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        reserve = input['reserve']
+
+        # register reserves
+        for i in range(int(reserve)):
+            serializer = BikeSerializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
         return Response(data, status=status.HTTP_201_CREATED)

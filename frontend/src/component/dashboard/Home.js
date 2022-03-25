@@ -41,7 +41,8 @@ class Search extends Component {
             from: "",
             to:"",
             selectedDate: new Date(),
-            is_departure: true
+            is_departure: true,
+            reserve: 0
         }
     }
 
@@ -67,6 +68,7 @@ class Search extends Component {
 
     onChange = e => {
 
+
         if(e.target  === undefined){
             this.setState({
             selectedDate:this.formatDate(e)
@@ -78,11 +80,13 @@ class Search extends Component {
         })
 
         }
-        else {
-            this.setState({
+
+    }
+
+    onChange_two = e => {
+        this.setState({
                 [e.target.name]: e.target.value
             })
-        }
     }
 
     onLoginClick = e =>{
@@ -108,6 +112,20 @@ class Search extends Component {
 
   }
 
+      handleBook = () => {
+
+      const userInput = {
+            from: this.props.booking.connections.from,
+            to: this.props.booking.connections.to,
+            selectedDate: this.props.booking.connections.selectedDate,
+            is_departure: this.props.booking.connections.is_departure,
+            train_number: this.props.booking.connections.train_number,
+            reserve: this.state.reserve
+      }
+
+      this.props.addUserAction(userInput, "BOOK")
+
+  }
      handleSearchProduct = (e) => {
 
       // setSearchProduct(e.target.value);
@@ -156,6 +174,8 @@ class Search extends Component {
         }
         const search = translateSearchPlaceholder();
         const label = this.state.is_departure ? "Departure" : "Arrival"
+        const connections = this.props.booking.connections
+        const trip_type = connections.is_departure ? "Departure" : "Arrival"
 
         return (
 
@@ -196,7 +216,7 @@ class Search extends Component {
                                                         id="from"
                                                         name="from"
                                                         autoComplete="from"
-                                                        onChange={this.onChange}
+                                                        onChange={this.onChange_two}
                                                         value={this.state.from}
                                                   />
                                             </Grid>
@@ -216,7 +236,7 @@ class Search extends Component {
                                                 id="to"
                                                 name="to"
                                                 autoComplete="to"
-                                                onChange={this.onChange}
+                                                onChange={this.onChange_two}
                                                 value={this.state.to}
                                           />
                                     </Grid>
@@ -278,15 +298,84 @@ class Search extends Component {
                             </Grid>
 
                       </Grid>
-                <Grid
+
+                                                      {
+                      JSON.stringify(connections) !== '{}' ? (
+
+                                          <Grid
                   item
                   xs
                   className={classes.outerColumn}
-                  style={{ display: "flex", alignItems: "center" }}
+                  style={{ display: "flex", alignItems: "center", marginLeft: "90px", marginTop: "100px" }}
                 >
-                  <Typography>Center L.</Typography>
+                                                <Grid
+                                  container
+                                  spacing={0}
+                                  direction="column"
+
+                                >
+
+                                <Grid container wrap="nowrap"  spacing={3}>
+                                    <Grid item>
+                                        <Typography style={{color: 'white'}}>{trip_type + ": "}{connections.selectedDate}</Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography style={{color: 'white'}}>{"Trip: "}{connections.from + " ->  "}{connections.to}</Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography style={{color: 'white'}}>{ " Train_no:   "}{connections.train_number}</Typography>
+                                    </Grid>
+                                </Grid>
+                                                    <Grid container wrap="nowrap"  spacing={3} style={{marginTop: "10px"}}>
+                                            <Grid item>
+                                                <Typography style={{color: 'white'}}>{ "Free slots: "}{connections.free_space}</Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography style={{color: 'white'}}>{"Likelihood of availability: "}{connections.probability }</Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography style={{color: 'white'}}>{ " Number of Search:   "}{connections.number_of_search}</Typography>
+                                            </Grid>
+                                </Grid>
+                                                    <Grid container wrap="nowrap"  spacing={10} style={{marginTop: "10px"}}>
+                                            <Grid item style={{marginTop: "20px"}}>
+
+                                                        <TextField
+                                                          id="reserve"
+                                                          name="reserve"
+                                                          label="Reserve"
+                                                          type="number"
+                                                          InputLabelProps={{
+                                                            shrink: true,
+                                                              inputProps: {
+                                                                   max: 50, min: 1
+                                                               }
+                                                          }}
+                                                          onChange={this.onChange_two}
+                                                        />
+                                            </Grid>
+                                            <Grid item style={{marginLeft: "160px"}} >
+                                                <Button
+                                        variant="contained"
+                                        // style={{width: 200.433,
+                                        //         height: 48}}
+                                        color="primary"
+                                        className={classes.submit}
+                                        onClick={this.handleBook}
+
+                              >
+                                Book
+                              </Button>
+                                            </Grid>
+
+                                </Grid>
+
+                                                </Grid>
                 </Grid>
-                <Grid
+
+                      ) : ""
+                  }
+         <Grid
                   item
                   xs
                   className={classes.outerColumn}
@@ -298,14 +387,18 @@ class Search extends Component {
                 </Grid>
               </Grid>
               <Grid container direction="column" item xs={4} align="center">
-                <Grid
-                  item
-                  container
-                  className={classes.centerColumn}
-                  justify="center"
-                >
-                  <Typography>Top Center</Typography>
-                </Grid>
+                  {/*{*/}
+                  {/*    this.props.booking.connection & (*/}
+                  {/*                        <Grid*/}
+                  {/*                        item*/}
+                  {/*                        container*/}
+                  {/*                        className={classes.centerColumn}*/}
+                  {/*                        justify="center"*/}
+                  {/*                      >*/}
+                  {/*                        <Typography>Top Center</Typography>*/}
+                  {/*                      </Grid>*/}
+                  {/*    )*/}
+                  {/*}*/}
                 <Grid
                   item
                   container
@@ -371,11 +464,13 @@ Search.propTypes = {
   loginUserAction: PropTypes.func.isRequired,
   loginUser: PropTypes.object.isRequired,
     addUserAction: PropTypes.func.isRequired,
+  booking: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => {
     return {
-        loginUser: state.loginUser
+        loginUser: state.loginUser,
+        booking: state.userAdmin
     }
 }
 

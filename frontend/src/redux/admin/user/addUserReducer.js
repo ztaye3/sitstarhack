@@ -4,7 +4,7 @@ import {
     DELETE_USER_FAIL,
     DELETE_USER_SUCCESS,
     GET_ALL_USER_FAIL,
-    GET_ALL_USER_SUCCESS,
+    GET_ALL_USER_SUCCESS, SEARCH_CONNECTION_SUCCESS,
     SEARCH_DATA__DETAIL_SUCCESS,
     SEARCH_DATA_SUCCESS,
     SEARCH_KEY_FAIL,
@@ -23,7 +23,17 @@ const initialState = {
     users : [],
     data: {},
     data_detail: [],
-    is_data_exist: false
+    is_data_exist: false,
+    connections: {
+    //         "train_number": "123",
+    // "free_space": 4,
+    // "number_of_search": 4,
+    // "is_departure": "true",
+    // "selectedDate": "1998-09-21 12:08:01",
+    // "from": "KJ",
+    // "to": "SH",
+    //  "probability": "High"
+    }
 }
 
 // Signup reducer
@@ -38,6 +48,11 @@ const addUserReducer = (state = initialState, action) =>{
                 re_passwordError: "",
                 first_nameError: "",
                 last_nameError: ""
+            }
+        case SEARCH_CONNECTION_SUCCESS:
+            return {
+                ...state,
+                connections: action.payload
             }
         case CREATE_USER_ERROR:
 

@@ -16,7 +16,6 @@ import authentication from "./utils/Authentication";
 import {BASE_BACKEND_URL, BASE_FRONTEND_URL, STRIPE_PUB_KEY} from "./utils/Constant";
 import Activate from "./component/signup/Activate";
 import Logout from "./component/logout/Logout";
-import {loadStripe} from "@stripe/stripe-js/pure";
 
 import Search from "./component/Search/Search";
 import Subscription from "./component/Subscription/Subscription";
@@ -33,7 +32,6 @@ import Home from "./component/dashboard/Home"
 export default function App() {
 
   const [currentTheme, setCurrentTheme] = useTheme();
-  const stripePromise = loadStripe(STRIPE_PUB_KEY);
 
   return (
     <div>
